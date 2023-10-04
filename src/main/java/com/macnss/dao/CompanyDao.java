@@ -1,13 +1,9 @@
 package com.macnss.dao;
 
 import com.macnss.Libs.Model;
-import com.macnss.app.Enums.AgentStatus;
-import com.macnss.app.Enums.Gender;
 import com.macnss.app.Models.Company;
-import com.macnss.app.Models.user.Employee;
 import com.macnss.interfaces.Dao.Dao;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
