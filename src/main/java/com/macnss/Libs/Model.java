@@ -30,47 +30,6 @@ public class Model implements AutoCloseable, com.macnss.interfaces.Libs.Model {
 
 
     /**
-     * Begins a database transaction. Call this method before performing a series of database operations
-     * that should be treated as a single transaction. This allows for rolling back changes in case of errors.
-     *
-     * @throws SQLException If a database access error occurs.
-     */
-    public void beginTransaction() throws SQLException {
-        if (!inTransaction) {
-            this.connection.setAutoCommit(false);
-            this.inTransaction = true;
-        }
-    }
-
-    /**
-     * Commits the current database transaction. This should be called after successfully completing a series
-     * of database operations within a transaction.
-     *
-     * @throws SQLException If a database access error occurs.
-     */
-    public void commitTransaction() throws SQLException {
-        if (inTransaction) {
-            this.connection.commit();
-            this.connection.setAutoCommit(true);
-            this.inTransaction = false;
-        }
-    }
-
-    /**
-     * Rolls back the current database transaction. This should be called in case of an error or when you want
-     * to discard changes made within the current transaction.
-     *
-     * @throws SQLException If a database access error occurs.
-     */
-    public void rollbackTransaction() throws SQLException {
-        if (inTransaction) {
-            this.connection.rollback();
-            this.connection.setAutoCommit(true);
-            this.inTransaction = false;
-        }
-    }
-
-    /**
      * Retrieves all records from the associated database table.
      *
      * @return A list of maps, where each map represents a row of data with column names as keys.
@@ -106,14 +65,6 @@ public class Model implements AutoCloseable, com.macnss.interfaces.Libs.Model {
         }
         return resultList;
     }
-
-    /**
-     * Searches for records in the associated database table that match a given keyword in specified columns.
-     *
-     * @param keyword The search keyword to match.
-     * @param columns The columns in which to perform the search.
-     * @return A list of maps, where each map represents a row of data with column names as keys.
-     */
     public List<Map<String, Object>> search(String keyword, String[] columns) {
         List<Map<String, Object>> resultList = new ArrayList<>();
         try {
@@ -319,80 +270,7 @@ public class Model implements AutoCloseable, com.macnss.interfaces.Libs.Model {
     }
 
 
-    /**
-     * Retrieves the count of records in the associated database table that match a specific column value.
-     *
-     * @param WhereColumnName The name of the column to search.
-     * @param value           The value to search for in the specified column.
-     * @return The count of records matching the specified column value.
-     */
-    public int getColumnCount(String WhereColumnName, String value) {
-        System.out.println(this._softDelete);
-        try {
-            String query = "SELECT count(*) AS count FROM " + this._table + " WHERE " + WhereColumnName + " = ?";
 
-            if (this._softDelete) {
-                query += " AND delete_at IS NULL";
-            }
-
-            PreparedStatement preparedStatement = this.connection.prepareStatement(query);
-            preparedStatement.setString(1, value);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getInt("count");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return 0;
-    }
-
-    /**
-     * Retrieves all records from the associated database table that match a specific column value.
-     *
-     * @param columnName The name of the column to search.
-     * @param value      The value to search for in the specified column.
-     * @return A list of maps, where each map represents a row of data with column names as keys.
-     */
-    public List<Map<String, Object>> readAll(String columnName, Object value) {
-        List<Map<String, Object>> resultList = new ArrayList<>();
-        try {
-            String query = "SELECT * FROM " + this._table + " WHERE " + columnName + " = ?";
-
-            if (this._softDelete) {
-                query += " AND delete_at IS NULL";
-            }
-
-            PreparedStatement preparedStatement = this.connection.prepareStatement(query);
-
-            if (value instanceof Enum<?>) {
-                preparedStatement.setObject(1, value, Types.OTHER);
-            } else {
-                preparedStatement.setObject(1, value);
-            }
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            while (resultSet.next()) {
-                Map<String, Object> rowData = new HashMap<>();
-
-                for (int i = 1; i <= columnCount; i++) {
-                    String column = metaData.getColumnName(i);
-                    rowData.put(column, resultSet.getObject(column));
-                }
-
-                resultList.add(rowData);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return resultList;
-    }
 
     /**
      * Retrieves all records from the associated database table based on the specified primary key values.

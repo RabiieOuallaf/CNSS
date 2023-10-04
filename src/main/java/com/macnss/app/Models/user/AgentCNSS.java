@@ -16,6 +16,7 @@ public class AgentCNSS extends employee {
     int agent_cns_id = 0;
     AgentStatus status = null;
 
+
     public Map<String, Object> getAgentCNSS() {
         Map<String, Object> agents = new HashMap<>();
 
@@ -32,5 +33,7 @@ public class AgentCNSS extends employee {
 
         return agents;
     }
+
+
 
 }

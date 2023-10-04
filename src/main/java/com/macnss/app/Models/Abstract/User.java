@@ -1,9 +1,7 @@
 package com.macnss.app.Models.Abstract;
 
-import com.macnss.app.Enums.AgentStatus;
 import com.macnss.app.Enums.Gender;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 
 import java.sql.Date;
@@ -50,12 +48,6 @@ public abstract class User {
         this.email = email;
         this.phone = phone;
         this.password = password;
-    }
-
-    public void setUser(String cnie, String firstName, String lastName) {
-        this.cnie = cnie;
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 
     public String getFullName() {

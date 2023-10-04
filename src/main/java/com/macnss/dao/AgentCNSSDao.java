@@ -25,11 +25,7 @@ public class AgentCNSSDao extends Model implements Dao<AgentCNSS> {
         agentCnss = agent;
     }
 
-    /**
-     * Reads an AgentCNSS entity based on its unique identifier.
-     *
-     * @return The read AgentCNSS entity or null if not found.
-     */
+
     @Override
     public AgentCNSS read() {
         Map<String, Object> agentData = super.read(new Object[]{agentCnss.getAgent_cns_id()});
@@ -55,12 +51,6 @@ public class AgentCNSSDao extends Model implements Dao<AgentCNSS> {
         }
     }
 
-    /**
-     * Saves the AgentCNSS entity to the database.
-     *
-     * @return An optional containing the saved AgentCNSS entity, or an empty optional if there's an error.
-     * @throws SQLException If an SQL error occurs during the save operation.
-     */
     @Override
     public Optional<AgentCNSS> save() throws SQLException {
         if (super.create(agentCnss.getAgentCNSS()) == null) {
@@ -70,12 +60,7 @@ public class AgentCNSSDao extends Model implements Dao<AgentCNSS> {
         }
     }
 
-    /**
-     * Retrieves an AgentCNSS entity by its email.
-     *
-     * @param email The email of the AgentCNSS to retrieve.
-     * @return An optional containing the AgentCNSS if found, or an empty optional if not found.
-     */
+
     @Override
     public Optional<AgentCNSS> get(String email) {
         Map<String, Object> agentData = super.read(new String[]{"email", "status::text"}, new String[]{email, AgentStatus.ACTIVE.toString()});
@@ -100,11 +85,6 @@ public class AgentCNSSDao extends Model implements Dao<AgentCNSS> {
         return Optional.of(agentCnss);
     }
 
-    /**
-     * Retrieves all AgentCNSS entities.
-     *
-     * @return A list of all AgentCNSS entities.
-     */
     public List<AgentCNSS> getAll() {
         List<AgentCNSS> agentsCNSS = new ArrayList<>();
 
@@ -134,13 +114,7 @@ public class AgentCNSSDao extends Model implements Dao<AgentCNSS> {
         return agentsCNSS;
     }
 
-    /**
-     * Creates a new AgentCNSS entity in the database.
-     *
-     * @param entity The AgentCNSS entity to be created.
-     * @return An optional containing the created AgentCNSS entity, or an empty optional if there's an error.
-     * @throws SQLException if a database error occurs during creation.
-     */
+
     @Override
     public Optional<AgentCNSS> create(AgentCNSS entity) throws SQLException {
         if (super.create(entity.getAgentCNSS()) == null) {
@@ -150,12 +124,7 @@ public class AgentCNSSDao extends Model implements Dao<AgentCNSS> {
         }
     }
 
-    /**
-     * Updates an existing AgentCNSS entity in the database.
-     *
-     * @param agent The AgentCNSS entity to be updated.
-     * @return An optional containing the updated AgentCNSS entity, or an empty optional if there's an error.
-     */
+
     @Override
     public Optional<AgentCNSS> update(AgentCNSS agent) {
         if (super.update(agent.getAgentCNSS(), new String[]{String.valueOf(agent.getAgent_cns_id())})) {
