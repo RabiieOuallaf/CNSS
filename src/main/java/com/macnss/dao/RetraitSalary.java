@@ -1,4 +1,7 @@
 package com.macnss.dao;
 
-public class RetraitSalary {
+import com.macnss.Libs.Model;
+
+public class RetraitSalary extends Model {
+
 }

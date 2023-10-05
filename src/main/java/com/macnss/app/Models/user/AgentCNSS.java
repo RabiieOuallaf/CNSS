@@ -1,7 +1,6 @@
 package com.macnss.app.Models.user;
 
 import com.macnss.app.Enums.AgentStatus;
-import com.macnss.app.Enums.Gender;
 import com.macnss.app.Models.Abstract.employee;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
