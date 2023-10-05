@@ -114,7 +114,6 @@ public class EmployeeDao extends Model implements Dao<Employee> {
 
 
 
-
     public Optional<Employee> get(String cnie) {
         Map<String, Object> employeeData = super.read(new String[]{"cnie"}, new String[]{cnie});
 
