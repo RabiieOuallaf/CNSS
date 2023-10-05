@@ -19,7 +19,7 @@ public class Employee extends employee {
         if (this.cnie != null) employee.put("cnie", this.cnie);
         if (this.firstName != null) employee.put("first_name", this.firstName);
         if (this.lastName != null) employee.put("last_name", this.lastName);
-        if (this.email != null) employee.put("email", this.email);
+        if (this.email != null) employee.put("e mail", this.email);
         if (this.birthday != null) employee.put("birthday", this.birthday);
         if (this.phone != null) employee.put("phone", this.phone);
         if (this.gender != null) employee.put("gender", this.gender);
