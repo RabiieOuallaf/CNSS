@@ -179,4 +179,5 @@ public class AgentCNSSDao extends Model implements Dao<AgentCNSS> {
     public boolean delete(AgentCNSS agent) {
         return super.delete(new String[]{String.valueOf(agent.getAgentCNSS())});
     }
+
 }

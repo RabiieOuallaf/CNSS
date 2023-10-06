@@ -25,7 +25,9 @@ public class CompanyDao extends Model implements Dao<Company> {
         if(companyData != null) {
             company.setCompany(
                     (String)  companyData.get("name"),
-                    (Integer) companyData.get("company_id")
+                    (Integer) companyData.get("company_id"),
+                    (String) companyData.get("email"),
+                    (String) companyData.get("password")
             );
 
             return company;
@@ -36,8 +38,8 @@ public class CompanyDao extends Model implements Dao<Company> {
 
     @Override
     // String param
-    public Optional<Company> get(String name) {
-        Map<String, Object> companyData = super.read(new String[]{"company_id"}, new String[]{name});
+    public Optional<Company> get(String email) {
+        Map<String, Object> companyData = super.read(new String[]{"email"}, new String[]{email});
 
         if (companyData == null) {
             return Optional.empty();
@@ -45,8 +47,9 @@ public class CompanyDao extends Model implements Dao<Company> {
 
         company.setCompany(
                 (String) companyData.get("name"),
-                (Integer) companyData.get("company_id")
-
+                (Integer) companyData.get("company_id"),
+                (String) companyData.get("email"),
+                (String) companyData.get("password")
         );
 
 
@@ -63,7 +66,9 @@ public class CompanyDao extends Model implements Dao<Company> {
 
         company.setCompany(
                 (String) companyData.get("name"),
-                (Integer) companyData.get("company_id")
+                (Integer) companyData.get("company_id"),
+                (String) companyData.get("email"),
+                (String) companyData.get("password")
 
         );
 
@@ -85,7 +90,9 @@ public class CompanyDao extends Model implements Dao<Company> {
             company.setCompany(
 
                     (String) companyData.get("name"),
-                    (Integer) companyData.get("company_id")
+                    (Integer) companyData.get("company_id"),
+                    (String) companyData.get("email"),
+                    (String) companyData.get("password")
 
             );
             companies.add(company);
@@ -133,7 +140,9 @@ public class CompanyDao extends Model implements Dao<Company> {
             company.setCompany(
 
                     (String) companyData.get("name"),
-                    (Integer) companyData.get("company_id")
+                    (Integer) companyData.get("company_id"),
+                    (String) companyData.get("email"),
+                    (String) companyData.get("password")
 
             );
             companies.add(company);
