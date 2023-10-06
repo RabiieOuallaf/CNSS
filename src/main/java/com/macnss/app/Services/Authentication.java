@@ -149,11 +149,11 @@ public class Authentication {
         }
     }
 
-    public boolean authenticateCompany(String email, String password) {
-        try(CompanyDao dao = new CompanyDao(new Company())){
-
-        };
-    }
+//    public boolean authenticateCompany(String email, String password) {
+//        try(CompanyDao dao = new CompanyDao(new Company())){
+//
+//        };
+//    }
 
     public boolean registerCompany(String email, String password) {
         return true;
