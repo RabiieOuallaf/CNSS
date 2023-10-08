@@ -1,16 +1,17 @@
 package com.macnss.dao;
 
 import com.macnss.Libs.Model;
+import com.macnss.app.Enums.EmployeeStatus;
 import com.macnss.app.Models.Static.BasicSalary;
+import com.macnss.app.Models.Static.RetraitSalary;
+import com.macnss.app.Models.user.Employee;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BasicSalaryDao extends Model {
 
@@ -20,91 +21,115 @@ public class BasicSalaryDao extends Model {
         super("base_salary", new String[]{"salary_id"});
         this.basicSalary = basicSalary;
     }
-    public BasicSalary setSalary(String employeeMatricule, float salary) throws SQLException {
+    public List<BasicSalary> setSalary(Date birthday,String employeeMatricule, float monthlySalary, int totalWorkingDays) throws SQLException {
+        List<BasicSalary> salaryRecords = new ArrayList<>();
 
-        List<Map<String, Object>> salaries = super.search(employeeMatricule,new String[]{"employee_matricule"});
-        if(salaries == null) {
+        if (totalWorkingDays <= 0) {
+            return salaryRecords; // No need to insert records for zero or negative working days.
+        }
 
-            String setSalaryQuery = "INSERT INTO base_salary(employee_matricule,salary,starting_date,end_date) VALUES (?,?,?,?)";
+        int monthsWorked = totalWorkingDays / 26; // Assuming 26 working days per month.
+
+        // Get the current date.
+        Date currentDate = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+
+        // Calculate the start and end dates for each month and insert records.
+        for (int i = 0; i < monthsWorked; i++) {
+            calendar.set(Calendar.DAY_OF_MONTH, 1); // Start of the month.
+            Date startDate = calendar.getTime();
+
+            calendar.add(Calendar.MONTH, 1);
+            calendar.add(Calendar.DAY_OF_MONTH, -1); // End of the month.
+            Date endDate = calendar.getTime();
+
+            // Insert the salary record for this month.
+            String setSalaryQuery = "INSERT INTO base_salary(employee_matricule, salary, starting_date, end_date) VALUES (?,?,?,?)";
             PreparedStatement preparedStatement = this.connection.prepareStatement(setSalaryQuery);
-            preparedStatement.setString(1,employeeMatricule);
-            preparedStatement.setFloat(2,salary);
-            Date currentDate = new Date();
-            preparedStatement.setDate(3, (java.sql.Date) currentDate);
-            preparedStatement.setDate(4,null);
+            preparedStatement.setString(1, employeeMatricule);
+            preparedStatement.setFloat(2, monthlySalary);
+            preparedStatement.setDate(3, new java.sql.Date(startDate.getTime()));
+            preparedStatement.setDate(4, new java.sql.Date(endDate.getTime()));
 
             int isSalaryInserted = preparedStatement.executeUpdate();
 
-            Map<String, Object> salariesData = super.read(new Object[]{basicSalary.getEmployee_matricule()});
+            if (isSalaryInserted > 0) {
+                BasicSalary basicSalary = new BasicSalary(); // Create a BasicSalary object and set its properties.
+                basicSalary.setEmployee_matricule(employeeMatricule);
+                basicSalary.setSalary(monthlySalary);
+                basicSalary.setStarting_date(startDate);
+                basicSalary.setEnd_date(endDate);
+                salaryRecords.add(basicSalary);
 
-            if(isSalaryInserted > 0) {
-                basicSalary.setBasicSalary(
-                        (Integer)  salariesData.get("salary_id"),
-                        (String) salariesData.get("employee_matricule"),
-                        (Float) salariesData.get("salary"),
-                        (Date) salariesData.get("starting_date"),
-                        (Date) salariesData.get("end_date")
-                );
-                return basicSalary;
-            }else {
-                return null;
+
+
+                RetraitSalaryDao retraitSalaryDao = new RetraitSalaryDao();
+                System.out.print(calculateAverageSalary(employeeMatricule));
+                float retraitSalary = retraitSalaryDao.calculateRetirementSalary(birthday,calculateAverageSalary(employeeMatricule),totalWorkingDays);
+
+                retraitSalaryDao.setRetraitSalary(employeeMatricule,retraitSalary,monthlySalary,totalWorkingDays);
+
             }
 
-
-        }else {
-            return null;
+            // Move to the next month.
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
+        return salaryRecords;
     }
 
-    public BasicSalary updateSalary(String employeeMatricule, int salary_id ,float salary) throws SQLException{
-        List<Map<String, Object>> salaries = super.search(employeeMatricule,new String[]{"employee_matricule"});
-        if(salaries != null) {
-            String setCurrentSalaryEndDate = "UPDATE base_salary SET end_date = ? WHERE employee_matricule = ? AND salary_id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(setCurrentSalaryEndDate);
-            preparedStatement.setDate(1,(java.sql.Date) new Date());
-            preparedStatement.setString(2,employeeMatricule);
-            preparedStatement.setInt(3,salary_id);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
 
 
-            if(resultSet != null) {
-
-
-                BasicSalary insertNewSalaryRecord = setSalary(employeeMatricule,salary);
-
-                if(insertNewSalaryRecord != null) {
-
-                    int employee_salary_id = resultSet.getInt("salary_id");
-                    String employee_matricule = resultSet.getString("employee_matricule");
-                    Float employee_salary = resultSet.getFloat("salary");
-                    Date salary_starting_date = resultSet.getDate("starting_date");
-
-                    basicSalary.setBasicSalary(
-                            (Integer) employee_salary_id,
-                            (String) employee_matricule,
-                            (Float) employee_salary,
-                            (Date) salary_starting_date
-                    );
-                    return basicSalary;
-                }else {
-                    return null;
-                }
-
-
-
-
-            }else {
-                return null;
-            }
-
-        }else {
-            return null;
-        }
-
-    }
+//    public BasicSalary updateSalary(String employeeMatricule, int salary_id ,float salary) throws SQLException{
+//        List<Map<String, Object>> salaries = super.search(employeeMatricule,new String[]{"employee_matricule"});
+//        if(salaries != null) {
+//            String setCurrentSalaryEndDate = "UPDATE base_salary SET end_date = ? WHERE employee_matricule = ? AND salary_id = ?";
+//
+//            PreparedStatement preparedStatement = connection.prepareStatement(setCurrentSalaryEndDate);
+//            preparedStatement.setDate(1,(java.sql.Date) new Date());
+//            preparedStatement.setString(2,employeeMatricule);
+//            preparedStatement.setInt(3,salary_id);
+//
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//
+//            if(resultSet != null) {
+//
+//
+//                BasicSalary insertNewSalaryRecord = (BasicSalary) setSalary(employeeMatricule,salary,4);
+//
+//                if(insertNewSalaryRecord != null) {
+//
+//                    int employee_salary_id = resultSet.getInt("salary_id");
+//                    String employee_matricule = resultSet.getString("employee_matricule");
+//                    Float employee_salary = resultSet.getFloat("salary");
+//                    Date salary_starting_date = resultSet.getDate("starting_date");
+//
+//                    basicSalary.setBasicSalary(
+//                            (Integer) employee_salary_id,
+//                            (String) employee_matricule,
+//                            (Float) employee_salary,
+//                            (Date) salary_starting_date
+//                    );
+//                    return basicSalary;
+//                }else {
+//                    return null;
+//                }
+//
+//
+//
+//
+//            }else {
+//                return null;
+//            }
+//
+//        }else {
+//            return null;
+//        }
+//
+//    }
 
     public Float calculateAverageSalary(String employeeMatricule) throws SQLException{
         String averageSalaryQuery = "SELECT AVG(salary) as average_salary FROM base_salary WHERE employee_matricule = ?";

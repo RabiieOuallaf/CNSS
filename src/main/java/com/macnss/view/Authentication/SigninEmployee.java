@@ -1,11 +1,16 @@
 package com.macnss.view.Authentication;
 
+import com.macnss.app.Models.Company;
+import com.macnss.app.Models.user.Employee;
 import com.macnss.app.Services.Authentication;
+
+import com.macnss.view.Employee.index;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class SigninEmployee extends JFrame implements ActionListener {
     Authentication auth;
@@ -16,12 +21,12 @@ public class SigninEmployee extends JFrame implements ActionListener {
     private ImageIcon userIcon, passwordIcon;
     private Image logo;
 
-    private String enteredUsername = null, enteredPassword = null;
+    private String enteredMatricule= null;
 
     public SigninEmployee() {
         auth = new Authentication();
 
-        setTitle("Signup company");
+        setTitle("Signin employee");
         setSize(560, 730);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -38,7 +43,7 @@ public class SigninEmployee extends JFrame implements ActionListener {
         matricule = new JPasswordField();
         matriculeLabel = new JLabel("Matricule : ");
         resetButton = new JButton("R");
-        signInButton = new JButton("Signup");
+        signInButton = new JButton("Sign in");
 
 
         JLabel logoLabel = new JLabel(new ImageIcon(logo));
@@ -72,7 +77,15 @@ public class SigninEmployee extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == signInButton) {
+            enteredMatricule = new String(matricule.getPassword());
+            try {
+                new index(new Employee(),enteredMatricule);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
 
+        }
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

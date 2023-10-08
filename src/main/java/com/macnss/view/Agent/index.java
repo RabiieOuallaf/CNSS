@@ -185,44 +185,6 @@ public class index extends JFrame implements ActionListener {
         }
     }
 
-    private int extractId(String authorString) {
-        String[] parts = authorString.split(",");
-
-        if (parts.length == 2) {
-            try {
-                return Integer.parseInt(parts[0].trim());
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return -1;
-    }
-
-    private String concatenateTexts(String[] textsWithId) {
-        StringBuilder concatenatedText = new StringBuilder();
-
-        for (String text : textsWithId) {
-            String[] parts = text.split(",");
-            if (parts.length == 2) {
-                if (concatenatedText.length() > 0) {
-                    concatenatedText.append(", ");
-                }
-                concatenatedText.append(parts[1].trim());
-            }
-        }
-
-        return concatenatedText.toString();
-    }
-
-
-    private void removeAllRowFromTable() {
-        int rowCount = tableModel.getRowCount();
-        for (int i = rowCount - 1; i >= 0; i--) {
-            tableModel.removeRow(i);
-        }
-    }
-
     private void setButtons(JButton butt) {
         butt.setBorderPainted(false);
         butt.setHorizontalAlignment(SwingConstants.LEFT);
@@ -231,6 +193,7 @@ public class index extends JFrame implements ActionListener {
         Font police = new Font("SansSerif", Font.BOLD, 15);
         butt.setFont(police);
     }
+
 
 
 }

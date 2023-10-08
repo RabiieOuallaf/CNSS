@@ -4,11 +4,14 @@ import com.macnss.Libs.Model;
 import com.macnss.app.Models.Company;
 import com.macnss.interfaces.Dao.Dao;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 public class CompanyDao extends Model implements Dao<Company> {
     private final Company company;
@@ -106,16 +109,40 @@ public class CompanyDao extends Model implements Dao<Company> {
         if (super.create(company.getCompany()) == null) {
             return Optional.empty();
         } else {
+
             return Optional.of(company);
-        }    }
+        }
+    }
 
     @Override
     public Optional<Company> create(Company entity) throws SQLException {
         if (super.create(company.getCompany()) == null) {
             return Optional.empty();
         } else {
+
             return Optional.of(company);
-        }    }
+        }
+    }
+
+    public Optional<Company> createCompany(String companyName, String companyEmail, String companyPassword)throws SQLException {
+        String hashPassword = BCrypt.hashpw(companyPassword,BCrypt.gensalt());
+
+        String insertCompany = "INSERT INTO " + _table + " (name,email,password) VALUES(?,?,?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(insertCompany);
+
+        preparedStatement.setString(1,companyName);
+        preparedStatement.setString(2,companyEmail);
+        preparedStatement.setString(3,hashPassword);
+
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        if(rowsAffected > 0) {
+            company.setCompany(companyName,companyEmail,companyPassword);
+            return Optional.of(company);
+        }
+        return Optional.empty();
+    }
+    
 
     @Override
     public Optional<Company> update(Company entity) {
@@ -129,11 +156,8 @@ public class CompanyDao extends Model implements Dao<Company> {
     @Override
     public List<Company> find(String criteria) {
         List<Company> companies = new ArrayList<>();
-
         List<Map<String, Object>> companiesData = super.readAll(new String[]{company.getName()});
-
         if (companiesData.isEmpty()) return companies;
-
         companiesData.forEach((companyData) -> {
             Company company = new Company();
 
@@ -146,9 +170,6 @@ public class CompanyDao extends Model implements Dao<Company> {
 
             );
             companies.add(company);
-
-
-
         });
 
         return companies;

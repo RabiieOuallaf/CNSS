@@ -135,12 +135,15 @@ public class Model implements AutoCloseable, com.macnss.interfaces.Libs.Model {
         String query = "INSERT INTO " + _table + " (" + columns.toString() + ") VALUES (" + values.toString() + ")";
         PreparedStatement preparedStatement = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
+
         int index = 1;
         for (Object value : data.values()) {
             if (value instanceof Enum<?>) {
                 preparedStatement.setObject(index++, value, Types.OTHER);
+
             } else {
                 preparedStatement.setObject(index++, value);
+
             }
         }
 

@@ -1,11 +1,17 @@
 package com.macnss.view.Authentication;
 
+import com.macnss.app.Models.Company;
+import com.macnss.app.Models.user.Employee;
 import com.macnss.app.Services.Authentication;
+import com.macnss.dao.CompanyDao;
+import com.macnss.view.Company.index;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Optional;
 
 public class SigningCompany extends JFrame implements ActionListener {
     Authentication auth;
@@ -17,7 +23,7 @@ public class SigningCompany extends JFrame implements ActionListener {
     private ImageIcon userIcon, passwordIcon;
     private Image logo;
 
-    private String enteredUsername = null, enteredPassword = null;
+    private String enteredEmail = null, enteredPassword = null;
 
     public SigningCompany() {
         auth = new Authentication();
@@ -93,20 +99,34 @@ public class SigningCompany extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
-            enteredUsername = username.getText();
+            enteredEmail = username.getText();
             enteredPassword = new String(password.getPassword());
 
-            if (auth.preAuthenticateAdministrator(enteredUsername, enteredPassword)) {
+            if (auth.authenticateCompany(enteredEmail, enteredPassword)) {
+                Company company = new Company.Builder()
+                                            .email(enteredEmail)
+                                            .password(enteredPassword)
+                                            .build();
+                index Indexview = null;
+                CompanyDao companyDao = new CompanyDao(company);
 
-                remove(usernameLabel);
-                remove(username);
-                remove(passwordLabel);
-                remove(password);
-                remove(loginButton);
-                remove(forgetPasswordButton);
+                Optional<Company> activeCompanyData = companyDao.get(company.getEmail());
 
-                revalidate();
-                repaint();
+                if(activeCompanyData.isPresent()){
+                    Company activeCompany = new Company.Builder()
+                            .companyId(activeCompanyData.get().getCompany_id())
+                            .email(activeCompanyData.get().getEmail())
+                            .password(activeCompanyData.get().getPassword())
+                            .build();
+                    try {
+                        Indexview = new index(activeCompany);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+
+                assert Indexview != null;
+                Indexview.setVisible(true);
 
             } else {
                 JOptionPane.showMessageDialog(this, "Username or Password Incorrect", "Error", JOptionPane.ERROR_MESSAGE);

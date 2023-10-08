@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Data
 public class BasicSalary {
-    int salary_id = 0;
+    int salary_id;
     String employee_matricule; // WIch is basically cnie
     float salary;
 
@@ -37,6 +37,17 @@ public class BasicSalary {
     }
     public void setBasicSalary(int salary_id, String employee_matricule, float salary,Date starting_date) {
         this.salary_id = salary_id;
+        this.employee_matricule = employee_matricule;
+        this.salary = salary;
+        this.starting_date = starting_date;
+    }
+    public void setBasicSalary(String employee_matricule, float salary,Date starting_date) {
+        this.salary_id = salary_id;
+        this.employee_matricule = employee_matricule;
+        this.salary = salary;
+        this.starting_date = starting_date;
+    }
+    public void setBasicSalary( float salary,Date starting_date) {
         this.employee_matricule = employee_matricule;
         this.salary = salary;
         this.starting_date = starting_date;

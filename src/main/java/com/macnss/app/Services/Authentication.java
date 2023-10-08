@@ -6,6 +6,8 @@ import com.macnss.app.Models.user.AgentCNSS;
 import com.macnss.dao.*;
 import com.macnss.helpers.AuthenticationHelpers;
 
+import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -149,14 +151,48 @@ public class Authentication {
         }
     }
 
-//    public boolean authenticateCompany(String email, String password) {
-//        try(CompanyDao dao = new CompanyDao(new Company())){
+    public boolean authenticateCompany(String email, String password) {
+        try(CompanyDao dao = new CompanyDao(new Company())){
+            Optional<Company> companyOptional = dao.get(email);
+
+            if(companyOptional.isPresent()) {
+
+                Company company = companyOptional.get();
+                return AuthenticationHelpers.checkPassword(password, company.getPassword());
+            }
+            return false;
+        }catch(Exception e) {
+            throw new RuntimeException("Error during Company authentication" , e);
+        }
+    }
+
+    public boolean registerCompany(String companyName, String companyEmail,String companyPassword,String companyConfirmPassword) {
+        try(CompanyDao dao = new CompanyDao(new Company())){
+            if(Objects.equals(companyPassword, companyConfirmPassword)){
+
+                Optional<Company> companyOptional = dao.createCompany(companyName,companyEmail,companyPassword);
+                return companyOptional.isPresent();
+
+            }else {
+                System.out.println("Password doest not match");
+            }
+            return false;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+//    public boolean authenticateEmployee(String matricule) {
+//        try(EmployeeDao dao = new EmployeeDao(new Company())) {
+//            Optional<Company> employeeOptional = dao.get(matricule);
+//            System.out.println(employeeOptional);
+//            return employeeOptional.isPresent();
 //
-//        };
+//        }catch(RuntimeException e) {
+//            throw new RuntimeException("Error during Employee authentication");
+//        }
 //    }
 
-    public boolean registerCompany(String email, String password) {
-        return true;
-    }
+
 
 }

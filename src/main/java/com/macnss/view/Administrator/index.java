@@ -64,14 +64,14 @@ public class index extends JFrame implements ActionListener {
         ImageIcon Visit_icon = new ImageIcon("assets/icon/visit.png");
         ImageIcon Logout_icon = new ImageIcon("assets/icon/logout.png");
 
-        agent_btn = new JButton("  Agent", Agent_icon);
-        patient_btn = new JButton("  Patient", Patient_icon);
-        medecine_btn = new JButton("  Medecine", Medecine_icon);
-        analyse_btn = new JButton("  Analyse", Laboratory_icon);
-        radio_btn = new JButton(" Radio", Radio_icon);
-        visit_btn = new JButton("  Visit", Visit_icon);
-        scanner_btn = new JButton("  Scanner", Scanner_icon);
-        logout_btn = new JButton("  Logout", Logout_icon);
+        agent_btn = new JButton(" Agent", Agent_icon);
+        patient_btn = new JButton("Patient", Patient_icon);
+        medecine_btn = new JButton("Medecine", Medecine_icon);
+        analyse_btn = new JButton("Analyse", Laboratory_icon);
+        radio_btn = new JButton("Radio", Radio_icon);
+        visit_btn = new JButton("Visit", Visit_icon);
+        scanner_btn = new JButton("Scanner", Scanner_icon);
+        logout_btn = new JButton("Logout", Logout_icon);
 
         setButtons(agent_btn);
         setButtons(patient_btn);
@@ -184,40 +184,10 @@ public class index extends JFrame implements ActionListener {
         setting_agent_button.setBounds(1300, 150, 50, 24);
 
         addAgentDialog = new addAgentDialog(this);
-//        editBookDialog = new EditBookDialog(this);
 
         add_agent_button.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        addAgentDialog.setVisible(true);
-                    }
-                }
+                e -> addAgentDialog.setVisible(true)
         );
-//        setting_agent_button.addActionListener(
-//                new ActionListener() {
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        try {
-//                            editBookDialog.display();
-//                        } catch (SQLException ex) {
-//                            throw new RuntimeException(ex);
-//                        }
-//                    }
-//                }
-//        );
-//        delete_book_button.addActionListener(
-//                new ActionListener() {
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        try {
-//                            deleteBookDialog.display();
-//                        } catch (SQLException ex) {
-//                            throw new RuntimeException(ex);
-//                        }
-//                    }
-//                }
-//        );
 
         scrollPane = new JScrollPane(agentTable);
         scrollPane.setBounds(400, 190, 1000, 550);
@@ -370,32 +340,6 @@ public class index extends JFrame implements ActionListener {
                         throw new RuntimeException(ex);
                     }
 
-//
-//                    int[] authorIds = new int[selectedAuthors.length];
-//                    for (int i = 0; i < selectedAuthors.length; i++) {
-//                        authorIds[i] = extractId(selectedAuthors[i]);
-//                    }
-//
-//                    int[] categoryIds = new int[selectedCategories.length];
-//                    for (int i = 0; i < selectedCategories.length; i++) {
-//                        categoryIds[i] = extractId(selectedCategories[i]);
-//                    }
-//
-//                    try {
-//                        Book b = bc.addBook(isbn, title, description, language, quantity, pages, edition, authorIds, categoryIds);
-//                        if (b != null) {
-//                            tableModel.addRow(new Object[]{isbn, title, pages, edition, quantity, language, concatenateTexts(selectedAuthors), concatenateTexts(selectedCategories), description});
-//                            JOptionPane.showMessageDialog(null, "Book added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-//                            setVisible(false);
-//                            addBookDialog.removeAll();
-//                            revalidate();
-//                            repaint();
-//                            addBookDialog.dispose();
-//                            remove(addBookDialog);
-//                        }
-//                    } catch (SQLException throwables) {
-//                        throwables.printStackTrace();
-//                    }
                 }
             });
 

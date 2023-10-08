@@ -10,6 +10,8 @@ public class RetraitSalary {
 
     float retrait_salary;
     String employee_matricule;
+    private float salary;
+    private String status;
 
     public Map<String,Object> getRetraitSalary() {
         Map<String,Object> retraitSalaries = new HashMap<>();
@@ -21,8 +23,10 @@ public class RetraitSalary {
 
     }
 
-    public void setRetraitSalary(float retrait_salary, String employee_matricule){
+    public void setRetraitSalary(float retrait_salary, String employee_matricule,float salary,String status){
         this.retrait_salary = retrait_salary;
         this.employee_matricule = employee_matricule;
+        this.salary = salary;
+        this.status = status;
     }
 }
